@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ночное катание</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;600;700;800&family=Caveat:wght@700&display=swap">
+<style>
+/* Layout: одна узкая колонка под телефон, сцена склона сверху, дальше блоки курорта по порядку спуска, в конце салют */
+:root {
+  --night: #07132B;
+  --panel: #0F2147;
+  --deep: #16305F;
+  --line: #1E3566;
+  --line-2: #2B4577;
+  --snow: #EAF3FF;
+  --snow-dim: #D3E0F5;
+  --mist: #9FB3D9;
+  --ice: #7CC8FF;
+  --lamp: #FFD27A;
+  --lamp-line: #4A3F22;
+  --pass-ink: #3B5585;
+  --pass-photo: #C9D9EE;
+  --sign: #1450B8;
+  --green: #1E9E5A;
+  --blue: #2F7BFF;
+  --red: #E5484D;
+  --black: #000000;
+  --bad: #FF8A90;
+  --rec: #FF5A5F;
+  --display: 'Unbounded', 'Arial Black', system-ui, sans-serif;
+  --body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --hand: 'Caveat', 'Comic Sans MS', cursive;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+html, body { background: var(--night); color: var(--snow); }
+body { font-family: var(--body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+#snow { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 460px; margin: 0 auto;
+  padding-left: max(18px, env(safe-area-inset-left, 0px));
+  padding-right: max(18px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+  display: flex; flex-direction: column; gap: 56px;
+}
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p, ol { margin: 0; }
+img { display: block; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; }
+.eyebrow { font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mist); }
+.h2 { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.12; }
+.h3 { font-family: var(--display); font-weight: 700; font-size: 20px; line-height: 1.15; }
+.muted { color: var(--mist); }
+.lead { font-size: 15px; color: var(--mist); }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 20px; }
+.btn { min-height: 52px; border-radius: 12px; border: 0; background: var(--lamp); color: var(--night); font-weight: 800; font-size: 16px; padding: 0 18px; flex-shrink: 0; }
+.btn.ice { background: var(--ice); }
+.btn:disabled { opacity: 0.6; cursor: default; }
+.ghost { min-height: 46px; border-radius: 12px; border: 1.5px solid var(--line-2); background: transparent; color: var(--snow); font-weight: 700; padding: 0 20px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Hero */
+.hero { display: flex; flex-direction: column; gap: 18px; }
+.scene { position: relative; margin-inline: calc(-1 * max(18px, env(safe-area-inset-left, 0px))); }
+.scene svg { display: block; width: 100%; height: auto; }
+.moon { position: absolute; left: 75.5%; top: 11%; width: 13%; aspect-ratio: 1; border: 0; border-radius: 50%; background: transparent; padding: 0; }
+.hero-gondola { transform-box: fill-box; transform-origin: 50% 0; animation: sway 3.6s ease-in-out infinite; }
+.hero .eyebrow { color: var(--ice); letter-spacing: 0.16em; }
+.hero h1 { font-family: var(--display); font-weight: 900; font-size: clamp(32px, 9.5vw, 40px); line-height: 1.06; }
+.hint { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--mist); }
+
+/* Ski pass */
+.pass { position: relative; background: var(--snow); color: var(--night); border-radius: 22px; padding: 30px 18px 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 0 44px rgba(124, 200, 255, 0.25); }
+.pass::before { content: ""; position: absolute; top: 10px; left: 50%; width: 34px; height: 9px; margin-left: -17px; border-radius: 9px; background: var(--night); }
+.pass-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.pass-title { font-family: var(--display); font-weight: 900; font-size: 18px; letter-spacing: 0.03em; }
+.chip { background: var(--night); color: var(--snow); font-weight: 800; font-size: 11px; padding: 5px 10px; border-radius: 20px; }
+.pass-body { display: flex; gap: 14px; }
+.pass-photo { width: 112px; height: 140px; flex-shrink: 0; border-radius: 12px; background: var(--pass-photo); object-fit: cover; object-position: 50% 30%; }
+.fields { display: grid; gap: 7px; min-width: 0; }
+.field span { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pass-ink); }
+.field b { font-size: 16px; font-weight: 800; }
+.barcode { height: 40px; background: repeating-linear-gradient(90deg, var(--night) 0 2px, transparent 2px 4px, var(--night) 4px 7px, transparent 7px 9px, var(--night) 9px 10px, transparent 10px 13px); }
+.pass-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--pass-ink); font-variant-numeric: tabular-nums; }
+
+/* Board */
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+.tile b { font-family: var(--display); font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tile span { font-size: 12px; line-height: 1.3; color: var(--mist); }
+.notice { background: var(--panel); border: 1px solid var(--lamp-line); border-radius: 16px; padding: 16px; display: flex; gap: 12px; }
+.notice .eyebrow { color: var(--lamp); }
+
+/* Counter */
+.counter { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.count { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.count b { display: block; font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.count span { font-size: 13px; color: var(--mist); }
+.count.big { grid-column: 1 / -1; }
+.count.big b { font-size: 40px; color: var(--ice); }
+
+/* Trails */
+.trail { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.trail summary { list-style: none; min-height: 64px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.trail summary::-webkit-details-marker { display: none; }
+.trail-name { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
+.trail-name b { font-weight: 800; font-size: 16px; }
+.trail-name small { font-size: 12px; color: var(--mist); }
+.trail[open] .trail-name b { font-family: var(--display); font-weight: 700; font-size: 18px; }
+.chev { transition: transform 0.25s ease; flex-shrink: 0; }
+.trail[open] .chev { transform: rotate(90deg); }
+.pole { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; border: 3px solid var(--snow); color: #FFFFFF; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
+.pole.green { background: var(--green); }
+.pole.blue { background: var(--blue); }
+.pole.red { background: var(--red); }
+.pole.black { background: var(--black); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--mist); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; border: 1.5px solid var(--snow); }
+.trail-body { padding: 0 0 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.strip { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; padding-right: 16px; scrollbar-width: none; }
+.strip::-webkit-scrollbar { display: none; }
+.photo { flex: 0 0 72%; aspect-ratio: 4 / 5; max-width: 100%; scroll-snap-align: start; border-radius: 14px; background: var(--deep); border: 0; padding: 0; overflow: hidden; }
+.photo img { width: 100%; height: 100%; object-fit: cover; }
+.swipe { padding-right: 16px; font-size: 13px; color: var(--mist); }
+
+/* Achievements */
+.ach-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.ach { background: var(--panel); border: 1px solid var(--lamp-line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.ach b { font-weight: 800; font-size: 15px; line-height: 1.25; }
+.ach small { font-size: 12px; line-height: 1.3; color: var(--mist); }
+
+/* Slalom: lessons */
+.slalom { position: relative; display: flex; flex-direction: column; gap: 14px; padding-block: 4px; }
+.slalom-track { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.4; }
+.gate { position: relative; display: flex; align-items: center; gap: 12px; }
+.gate.l { padding-right: 40px; }
+.gate.r { flex-direction: row-reverse; padding-left: 40px; }
+.gate.r .flag { transform: scaleX(-1); }
+.flag { flex-shrink: 0; }
+.gate-card { flex: 1 1 auto; min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.gate-card small { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mist); }
+.gate-card b { font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.25; text-wrap: balance; }
+
+/* Lift */
+.lift { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px; row-gap: 48px; padding-top: 28px; }
+.cable { position: absolute; left: -18px; right: -18px; height: 2px; background: var(--mist); transform: rotate(-7deg); transform-origin: left center; }
+.cab { display: flex; flex-direction: column; align-items: center; text-align: center; transform-origin: 50% 0; animation: sway 4s ease-in-out infinite; }
+.cab:nth-child(odd) { animation-delay: -1.3s; }
+.cab:nth-child(4n+3), .cab:nth-child(4n+4) { animation-duration: 4.6s; }
+.grip { width: 18px; height: 8px; border-radius: 3px; background: var(--mist); }
+.rod { width: 2px; background: var(--mist); }
+.cab-btn { position: relative; width: min(140px, 38vw); aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--ice); background: var(--panel) center / 108% no-repeat; box-shadow: 0 0 28px rgba(124, 200, 255, 0.4); display: flex; align-items: center; justify-content: center; padding: 0; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.cab-btn:hover, .cab-btn:focus-visible { transform: scale(1.04); box-shadow: 0 0 40px rgba(124, 200, 255, 0.6); }
+.cab-btn .play { width: 44px; height: 44px; border-radius: 50%; background: rgba(7, 19, 43, 0.6); display: flex; align-items: center; justify-content: center; }
+.warm .cab-btn { border-color: var(--lamp); box-shadow: 0 0 28px rgba(255, 210, 122, 0.35); }
+.warm .cab-btn:hover, .warm .cab-btn:focus-visible { box-shadow: 0 0 40px rgba(255, 210, 122, 0.55); }
+.cab-btn.pending { border-style: dashed; border-color: var(--line-2); box-shadow: none; cursor: default; transform: none; }
+.cab-btn.pending span { font-size: 13px; font-weight: 700; color: var(--mist); }
+.cab-no { margin-top: 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mist); }
+.cab-name { font-weight: 800; font-size: 15px; }
+
+/* Family lock */
+.family { background: var(--panel); border: 1px solid var(--lamp-line); border-radius: 22px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 0 44px rgba(255, 210, 122, 0.12); }
+.family .eyebrow { color: var(--lamp); }
+.lock-row { display: flex; gap: 8px; }
+.lock-row input { flex: 1 1 auto; min-width: 0; min-height: 52px; border-radius: 12px; border: 1.5px solid var(--line-2); background: var(--night); color: var(--snow); padding: 0 14px; font-size: 16px; letter-spacing: 0.2em; }
+.lock-row input::placeholder { letter-spacing: normal; color: var(--mist); }
+.lock-row input:focus-visible { outline: none; border-color: var(--lamp); }
+.lock-msg { font-size: 14px; min-height: 21px; color: var(--mist); }
+.lock-msg.err { color: var(--bad); }
+.shake { animation: shake 0.35s ease; }
+.divider { height: 1px; background: var(--line); margin-block: 8px; }
+
+.wish { font-family: var(--display); font-weight: 900; font-size: 30px; line-height: 1.1; color: var(--lamp); text-wrap: balance; }
+.gal-wrap { display: flex; flex-direction: column; gap: 10px; }
+
+/* Camera */
+.cam { position: relative; border-radius: 18px; overflow: hidden; background: var(--deep); aspect-ratio: 4 / 5; max-width: 100%; display: flex; align-items: center; justify-content: center; color: var(--mist); font-size: 14px; }
+.cam img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cam-corner { position: absolute; z-index: 2; width: 26px; height: 26px; border-color: var(--snow); border-style: solid; opacity: 0.85; }
+.cam-corner.tl { top: 14px; left: 14px; border-width: 2px 0 0 2px; }
+.cam-corner.tr { top: 14px; right: 14px; border-width: 2px 2px 0 0; }
+.cam-corner.bl { bottom: 14px; left: 14px; border-width: 0 0 2px 2px; }
+.cam-corner.br { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
+.rec { position: absolute; z-index: 2; top: 14px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: var(--snow); white-space: nowrap; background: rgba(7, 19, 43, 0.55); padding: 4px 8px; border-radius: 6px; }
+.rec i { width: 8px; height: 8px; border-radius: 50%; background: var(--rec); animation: blink 1.2s steps(2, start) infinite; }
+.flash { position: absolute; z-index: 3; inset: 0; background: #FFFFFF; opacity: 0; pointer-events: none; }
+.flash.on { animation: flash 0.45s ease-out; }
+.cam-caption { font-size: 15px; color: var(--snow-dim); min-height: 23px; }
+
+/* Rules */
+.rules { list-style: none; padding: 0; display: flex; flex-direction: column; }
+.rules li { display: flex; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); font-size: 16px; }
+.rules li:first-child { border-top: 0; padding-top: 0; }
+.rules li:last-child { padding-bottom: 0; }
+.rules em { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ice); font-size: 15px; min-width: 22px; font-variant-numeric: tabular-nums; }
+
+/* Sign */
+.sign { background: var(--sign); border: 4px solid var(--snow); outline: 3px solid var(--sign); border-radius: 10px; padding: 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 0 34px rgba(124, 200, 255, 0.3); }
+.sign p { font-family: var(--display); font-weight: 900; font-size: 18px; line-height: 1.2; color: #FFFFFF; }
+
+/* Ticket */
+.ticket { display: flex; background: var(--snow); color: var(--night); border-radius: 18px; }
+.ticket-main { flex-grow: 1; min-width: 0; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.ticket-route { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 15px; line-height: 1.2; }
+.ticket-route span { flex: 1 1 0; min-width: 0; }
+.ticket-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tfield span { display: block; font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pass-ink); }
+.tfield b { font-size: 14px; font-weight: 800; line-height: 1.3; }
+.tfield.wide { grid-column: 1 / -1; position: relative; padding-right: 92px; }
+.sticker { position: absolute; right: -4px; top: -10px; width: 92px; padding: 8px 6px; background: var(--lamp); color: var(--night); border-radius: 10px; transform: rotate(8deg); box-shadow: 0 4px 10px rgba(7, 19, 43, 0.25); display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; font-family: var(--hand); font-size: 18px; line-height: 1; }
+.perf { width: 0; border-left: 2px dashed var(--pass-ink); margin: 14px 0; opacity: 0.6; }
+.stub { width: 58px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.stub span { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: 0.12em; color: var(--pass-ink); }
+
+/* Gallery */
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; border-radius: 16px; overflow: hidden; }
+.gallery button { aspect-ratio: 1; max-width: 100%; border: 0; padding: 0; background: var(--deep); overflow: hidden; }
+.gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease; }
+.gallery button:hover img { transform: scale(1.05); }
+
+/* Letter */
+.letter { background: var(--panel); border: 1px solid var(--lamp-line); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 0 44px rgba(255, 210, 122, 0.14); }
+.letter-head { display: flex; align-items: center; gap: 10px; }
+.letter-head h2 { font-family: var(--display); font-weight: 700; font-size: 22px; }
+.letter p { font-size: 17px; line-height: 1.65; color: var(--snow-dim); }
+.letter .sig { font-weight: 800; color: var(--lamp); }
+
+/* Finale */
+.finale { position: relative; height: 320px; border-radius: 22px; overflow: hidden; background: var(--night); border: 1px solid var(--line); }
+.finale canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.finale svg { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: auto; }
+.finale-text { position: absolute; left: 0; right: 0; top: 22px; text-align: center; padding: 0 16px; display: flex; flex-direction: column; gap: 6px; }
+.finale-text p:first-child { font-family: var(--display); font-weight: 900; font-size: 24px; line-height: 1.15; }
+.finale-text p:last-child { font-size: 15px; color: var(--snow-dim); }
+.finale .btn { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); white-space: nowrap; }
+footer { font-size: 13px; color: var(--mist); text-align: center; }
+
+/* Video modal */
+.overlay { position: fixed; inset: 0; z-index: 20; background: rgba(4, 10, 24, 0.9); display: flex; align-items: center; justify-content: center; padding: max(20px, env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); }
+.modal { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.round { position: relative; width: min(320px, 80vw); aspect-ratio: 1; }
+.round-clip { position: absolute; inset: 10px; border-radius: 50%; overflow: hidden; background: var(--panel); }
+.round video { width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); }
+.round svg.ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
+.round .tap { position: absolute; inset: 10px; border-radius: 50%; border: 0; background: transparent; }
+.round .state { position: absolute; inset: 10px; display: flex; align-items: center; justify-content: center; pointer-events: none; color: var(--snow); font-weight: 700; font-size: 15px; }
+.round .state .play { width: 64px; height: 64px; border-radius: 50%; background: rgba(7, 19, 43, 0.6); display: flex; align-items: center; justify-content: center; }
+.modal-name { font-family: var(--display); font-weight: 700; font-size: 20px; }
+
+/* Lightbox */
+.lb { position: fixed; inset: 0; z-index: 25; background: rgba(4, 10, 24, 0.96); display: flex; flex-direction: column; padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
+.lb-top { display: flex; justify-content: space-between; align-items: center; min-height: 48px; }
+.lb-count { font-size: 14px; font-weight: 700; color: var(--mist); font-variant-numeric: tabular-nums; padding-left: 6px; }
+.lb-stage { position: relative; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; touch-action: pan-y; }
+.lb-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; user-select: none; -webkit-user-drag: none; }
+.icon-btn { width: 48px; height: 48px; border-radius: 50%; border: 0; background: rgba(15, 33, 71, 0.8); display: flex; align-items: center; justify-content: center; }
+.lb-nav { position: absolute; top: 50%; transform: translateY(-50%); }
+.lb-prev { left: 4px; }
+.lb-next { right: 4px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 30; background: var(--snow); color: var(--night); font-weight: 800; font-size: 15px; padding: 12px 18px; border-radius: 14px; max-width: calc(100% - 40px); text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
+
+@keyframes sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@keyframes blink { to { visibility: hidden; } }
+@keyframes flash { 0% { opacity: 0.9; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-gondola, .cab, .shake, .rec i, .flash.on { animation: none; }
+  .chev, .cab-btn, .gallery img { transition: none; }
+}
+</style>
+
+<canvas id="snow" aria-hidden="true"></canvas>
+
+<main class="wrap">
+
+  <section class="hero" aria-labelledby="title">
+    <div class="scene">
+      <svg viewBox="0 0 390 250" aria-hidden="true">
+        <circle cx="318" cy="52" r="24" fill="#EAF3FF"/>
+        <circle cx="309" cy="46" r="4" fill="#C9D9EE"/>
+        <circle cx="326" cy="60" r="3" fill="#C9D9EE"/>
+        <polygon points="0,250 70,120 120,170 205,70 285,175 330,140 390,180 390,250" fill="#0F2147"/>
+        <polygon points="205,70 185,98 198,93 209,102 221,90 228,97" fill="#EAF3FF"/>
+        <polygon points="70,120 56,138 67,134 76,141 85,133" fill="#EAF3FF"/>
+        <polygon points="96,150 60,250 132,250" fill="#FFD27A" opacity="0.1"/>
+        <polygon points="248,165 212,250 284,250" fill="#FFD27A" opacity="0.1"/>
+        <polygon points="0,250 50,200 130,232 210,170 300,236 390,214 390,250" fill="#16305F"/>
+        <line x1="0" y1="205" x2="390" y2="88" stroke="#9FB3D9" stroke-width="1.5"/>
+        <line x1="70" y1="184" x2="70" y2="232" stroke="#9FB3D9" stroke-width="2"/>
+        <line x1="330" y1="106" x2="330" y2="230" stroke="#9FB3D9" stroke-width="2"/>
+        <g class="hero-gondola">
+          <line x1="200" y1="145" x2="200" y2="160" stroke="#9FB3D9" stroke-width="1.5"/>
+          <rect x="190" y="158" width="20" height="16" rx="4" fill="#7CC8FF"/>
+        </g>
+        <circle cx="96" cy="150" r="3" fill="#FFD27A"/>
+        <circle cx="248" cy="165" r="3" fill="#FFD27A"/>
+      </svg>
+      <button class="moon" id="moon" aria-label="Луна"></button>
+    </div>
+    <p class="eyebrow">Ночное катание · 26 октября</p>
+    <h1 id="title">С днём рождения, Саша</h1>
+    <p class="muted">Склон открыт до утра, фонари включены, подъёмник запущен. Всё ради тебя.</p>
+    <p class="hint"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Листай вниз, там твой ски-пасс</p>
+  </section>
+
+  <section class="pass" aria-label="Ски-пасс">
+    <div class="pass-top">
+      <span class="pass-title">НОЧНОЙ СКИ-ПАСС</span>
+      <span class="chip">VIP</span>
+    </div>
+    <div class="pass-body">
+      <img class="pass-photo" src="m/f/3.jpg" alt="Саша на склоне в маске и балаклаве">
+      <div class="fields">
+        <div class="field"><span>Владелец</span><b>Саша</b></div>
+        <div class="field"><span>Сезон</span><b>24-й</b></div>
+        <div class="field"><span>Тариф</span><b>«Старший брат»</b></div>
+        <div class="field"><span>Действует</span><b>пожизненно</b></div>
+      </div>
+    </div>
+    <div class="barcode" aria-hidden="true"></div>
+    <p class="pass-num">№ 26 10 2002 · ВСЕ ТРАССЫ · ВСЕ ПОДЪЁМНИКИ</p>
+  </section>
+
+  <section class="stack" aria-label="Табло курорта">
+    <p class="eyebrow">Табло курорта · сегодня</p>
+    <div class="board">
+      <div class="tile"><b>1 шт.</b><span>старший брат. Второго такого нет</span></div>
+      <div class="tile"><b>1144 км</b><span>до малой родины. Ближе, чем кажется</span></div>
+      <div class="tile"><b style="color: var(--lamp)">100%</b><span>настолько младший брат тобой гордится</span></div>
+    </div>
+    <div class="notice">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFD27A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+      <div class="stack" style="gap: 4px">
+        <p class="eyebrow">Объявление по курорту</p>
+        <p style="font-size: 15px">[Текст объявления]</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="count-h">
+    <h2 class="h2" id="count-h">Стаж на склоне</h2>
+    <p class="lead">Столько ты уже катаешься по жизни. Счётчик идёт прямо сейчас.</p>
+    <div class="counter">
+      <div class="count big"><b id="c-days">—</b><span>дней</span></div>
+      <div class="count"><b id="c-hours">—</b><span>часов сверху</span></div>
+      <div class="count"><b id="c-mins">—</b><span>минут и <span id="c-secs">—</span> сек.</span></div>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="trails-h">
+    <h2 class="h2" id="trails-h">Спуск по жизни</h2>
+    <p class="lead">Пять трасс, от простой к сложной. Жми на трассу, чтобы открыть.</p>
+    <div class="legend" aria-hidden="true">
+      <span><i style="background: var(--green)"></i>учебная</span>
+      <span><i style="background: var(--blue)"></i>лёгкая</span>
+      <span><i style="background: var(--red)"></i>средняя</span>
+      <span><i style="background: var(--black)"></i>для профи</span>
+    </div>
+    <div class="stack" style="gap: 10px" id="trails"></div>
+  </section>
+
+  <section class="stack" aria-labelledby="fame-h">
+    <h2 class="h2" id="fame-h">Зал славы</h2>
+    <p class="eyebrow" id="fame-count"></p>
+    <div class="ach-grid" id="fame"></div>
+  </section>
+
+  <section class="stack" aria-labelledby="teach-h">
+    <p class="eyebrow">Школа катания</p>
+    <h2 class="h2" id="teach-h">Мой первый инструктор</h2>
+    <p class="lead">Три главных урока, которые ты мне дал.</p>
+    <div class="slalom">
+      <svg class="slalom-track" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="8,0 92,34 8,67 92,100" fill="none" stroke="#9FB3D9" stroke-width="2" stroke-dasharray="6 6" vector-effect="non-scaling-stroke"/></svg>
+      <div class="gate l">
+        <svg class="flag" width="28" height="48" viewBox="0 0 28 48" aria-hidden="true"><path d="M5 2v44" stroke="#EAF3FF" stroke-width="2.5" stroke-linecap="round"/><path d="M6 4h18l-6 7 6 7H6z" fill="#E5484D"/></svg>
+        <div class="gate-card"><small>Урок 1</small><b>Научил ценить близких</b></div>
+      </div>
+      <div class="gate r">
+        <svg class="flag" width="28" height="48" viewBox="0 0 28 48" aria-hidden="true"><path d="M5 2v44" stroke="#EAF3FF" stroke-width="2.5" stroke-linecap="round"/><path d="M6 4h18l-6 7 6 7H6z" fill="#2F7BFF"/></svg>
+        <div class="gate-card"><small>Урок 2</small><b>Научил разбираться с конфликтами</b></div>
+      </div>
+      <div class="gate l">
+        <svg class="flag" width="28" height="48" viewBox="0 0 28 48" aria-hidden="true"><path d="M5 2v44" stroke="#EAF3FF" stroke-width="2.5" stroke-linecap="round"/><path d="M6 4h18l-6 7 6 7H6z" fill="#E5484D"/></svg>
+        <div class="gate-card"><small>Урок 3</small><b>Задал траекторию развития на всю жизнь</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="lift-h">
+    <h2 class="h2" id="lift-h">Подъёмник поздравлений</h2>
+    <p class="lead">В каждой кабинке кто-то едет к тебе с поздравлением. Жми на кабинку, включи звук.</p>
+    <div class="lift" id="lift-friends"></div>
+  </section>
+
+  <section class="family" aria-labelledby="family-h" id="family">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFD27A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" id="lock-icon"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      <p class="eyebrow">Только для своих</p>
+    </div>
+    <h2 class="h2" id="family-h">Фотоархив курорта</h2>
+    <div class="stack" id="family-lock" style="gap: 12px">
+      <p class="lead">Здесь все фото, от детства до сегодняшнего дня. Откроется по паролю.</p>
+      <form class="lock-row" id="lock-form" autocomplete="off">
+        <label for="pw" class="sr">Пароль</label>
+        <input id="pw" name="pw" type="password" inputmode="numeric" placeholder="Пароль" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <button class="btn" id="unlock" type="submit">Открыть</button>
+      </form>
+      <p class="lock-msg" id="lock-msg" aria-live="polite">Подсказка: начинается с девятки. Наш с тобой общий пароль</p>
+    </div>
+    <div class="stack" id="family-open" hidden>
+      <p class="wish">Всего самого самого!</p>
+      <p class="lead" id="gal-lead"></p>
+      <div class="gal-wrap">
+        <div class="gallery" id="gallery"></div>
+        <button class="ghost" id="gal-more" hidden></button>
+      </div>
+      <div class="divider" aria-hidden="true"></div>
+      <h3 class="h3">Камера на подъёмнике</h3>
+      <p class="lead">Жми на кнопку, камера поймает случайный кадр.</p>
+      <div class="cam" id="cam">
+        <span class="cam-corner tl"></span><span class="cam-corner tr"></span><span class="cam-corner bl"></span><span class="cam-corner br"></span>
+        <span class="rec"><i></i>REC · КАБИНКА 7</span>
+        <span id="cam-empty">Нажми «Сделать снимок»</span>
+        <img id="cam-img" alt="Случайный кадр с камеры" hidden>
+        <span class="flash" id="flash"></span>
+      </div>
+      <p class="cam-caption" id="cam-caption" aria-live="polite"></p>
+      <button class="btn" id="cam-btn">Сделать снимок</button>
+    </div>
+  </section>
+
+  <section class="card stack" aria-labelledby="rules-h">
+    <p class="eyebrow">Висит на входе в кассу</p>
+    <h2 class="h2" id="rules-h">Правила курорта</h2>
+    <ol class="rules">
+      <li><em>1</em><span>Именинник катается без очереди.</span></li>
+      <li><em>2</em><span>Звонить маме обязательно. Хотя бы раз в неделю.</span></li>
+      <li><em>3</em><span>Младшему брату на склоне уступать. Иногда.</span></li>
+      <li><em>4</em><span>Береги себя. Это главное правило курорта.</span></li>
+      <li><em>5</em><span>На вопросы младшего брата отвечать. Даже на глупые.</span></li>
+      <li><em>6</em><span>Скучать можно. Возвращаться обязательно.</span></li>
+    </ol>
+  </section>
+
+  <section class="sign" aria-label="Знак">
+    <svg width="56" height="56" viewBox="0 0 48 48" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><circle cx="30" cy="9" r="4"/><path d="M28 15 20 25l8 5-4 9"/><path d="M24 19l8 4 5-2"/><path d="M8 34l32 10"/></svg>
+    <p>ОСТОРОЖНО! БРАТ НА СКЛОНЕ</p>
+  </section>
+
+
+  <section class="stack" aria-labelledby="ticket-h">
+    <h2 class="h2" id="ticket-h">Обратный билет</h2>
+    <p class="lead">Купили заранее. Срок действия не ограничен.</p>
+    <div class="ticket">
+      <div class="ticket-main">
+        <div class="ticket-route">
+          <span>Где бы ты ни был</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#07132B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M4 12h15M14 6l6 6-6 6"/></svg>
+          <span>Брянск</span>
+        </div>
+        <div class="ticket-grid">
+          <div class="tfield"><span>Пассажир</span><b>Саша</b></div>
+          <div class="tfield"><span>Дата</span><b>как только сможешь</b></div>
+          <div class="tfield wide"><span>Место</span><b>за семейным столом</b></div>
+          <div class="tfield wide">
+            <span>Багаж</span><b>советы, деньги и истории для младшего брата</b>
+            <span class="sticker" aria-label="Стикер: особенно деньги">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#07132B" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 14.5c1 1.6 2.4 2.4 4 2.4s3-.8 4-2.4"/><path d="M9 9.5h.01M15 9.5h.01" stroke-width="2.6"/></svg>
+              особенно деньги
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="perf" aria-hidden="true"></div>
+      <div class="stub"><span>ВХОД · ДОМ</span></div>
+    </div>
+  </section>
+
+  <section class="letter" aria-labelledby="letter-h">
+    <div class="letter-head">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFD27A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9h11v7a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M9 3c-.8 1 .8 2 0 3M12.5 3c-.8 1 .8 2 0 3"/></svg>
+      <h2 id="letter-h">Записка у камина</h2>
+    </div>
+    <p>В детстве я тебя недолюбливал. Но только когда ты уехал, я понял, как скучно дома без тебя, и начал ценить время, проведённое с тобой. Особенно уроки, которые ты мне давал.</p>
+    <p>До сих пор помню, как перед уходом из дома выключил тебе компьютер, и папе пришлось подниматься к тебе, чтобы ввести пароль.</p>
+    <p class="sig">— Володя, младший брат</p>
+  </section>
+
+  <section class="finale" aria-label="Салют" id="finale">
+    <canvas id="fw" aria-hidden="true"></canvas>
+    <svg viewBox="0 0 390 90" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,90 60,40 110,70 190,10 260,65 320,35 390,60 390,90" fill="#0F2147"/><polygon points="190,10 176,30 186,26 194,33 203,24 208,29" fill="#EAF3FF"/></svg>
+    <div class="finale-text"><p>Новый сезон открыт!</p><p>С днём рождения, брат</p></div>
+    <button class="btn" id="fw-btn">Ещё салют</button>
+  </section>
+
+  <footer>Курорт «Саша» · склон открыт с 2002 года</footer>
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-name">
+    <div class="round" id="round">
+      <div class="round-clip"><video id="vid" playsinline preload="metadata"></video></div>
+      <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="none" stroke="#1E3566" stroke-width="2.5"/><circle id="ring" cx="50" cy="50" r="48" fill="none" stroke="#7CC8FF" stroke-width="2.5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
+      <button class="tap" id="tap" aria-label="Пауза или воспроизведение"></button>
+      <div class="state" id="vstate"></div>
+    </div>
+    <p class="modal-name" id="modal-name"></p>
+    <button class="ghost" id="close">Закрыть</button>
+  </div>
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Просмотр фото" hidden>
+  <div class="lb-top">
+    <span class="lb-count" id="lb-count"></span>
+    <button class="icon-btn" id="lb-close" aria-label="Закрыть"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EAF3FF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="lb-stage" id="lb-stage">
+    <img id="lb-img" alt="">
+    <button class="icon-btn lb-nav lb-prev" id="lb-prev" aria-label="Предыдущее фото"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EAF3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+    <button class="icon-btn lb-nav lb-next" id="lb-next" aria-label="Следующее фото"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EAF3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  // ===== Данные =====
+  var BIRTH = { y: 2002, m: 9, d: 26 }; // m: 9 = октябрь
+  var TRAILS = [
+    { name: 'Детство', level: 'зелёная · учебная',                            color: 'green', photos: [45, 47, 59, 46, 49] },
+    { name: 'Школа',   level: 'синяя · лёгкая',                               color: 'blue',  photos: [60, 58, 50, 13, 23] },
+    { name: 'Спорт',   level: 'красная · средняя',                            color: 'red',   photos: [52, 15, 17, 39, 21] },
+    { name: 'Друзья',  level: 'красная · средняя',                            color: 'red',   photos: [22, 7, 32, 8, 53, 31, 33, 62] },
+    { name: 'Сейчас',  level: 'чёрная · только для профи',                    color: 'black', photos: [65, 16, 55, 9, 19, 6] }
+  ];
+  var FAME = [
+    { icon: 'medal',  title: 'Лучший каратист' },
+    { icon: 'skier',  title: 'Лучший горнолыжник' },
+    { icon: 'pad',    title: 'Герой 1 в Dota 2' },
+    { icon: 'heart',  title: 'Лучший брат' },
+    { icon: 'signal', title: 'Связь даже в горах', sub: 'не забывает про родных' },
+    { icon: 'swords', title: 'Пройдены Warcraft 3 и StarCraft 2' },
+    { icon: 'home',   title: 'Выжил в одной комнате с младшим братом' },
+    { icon: 'chat',   title: 'Главный советчик младшего брата' },
+    { icon: 'star',   title: 'Мамина гордость' },
+    { icon: 'flag',   title: 'Пример для младшего брата' }
+  ];
+  var FRIENDS = [
+    { name: 'Володя', who: 'младший брат',    v: 'm/v-volodya.mp4', p: 'm/v-volodya.jpg' },
+    { name: 'Стёпа',  who: 'двоюродный брат', v: 'm/v-stepa.mp4',   p: 'm/v-stepa.jpg' },
+    { name: 'Артём',  v: 'm/v-artem.mp4',  p: 'm/v-artem.jpg' },
+    { name: 'Кирилл', v: 'm/v-kirill.mp4', p: 'm/v-kirill.jpg' },
+    { name: 'Вася',   v: 'm/v-vasya.mp4',  p: 'm/v-vasya.jpg' },
+    { name: 'Даша',   v: 'm/v-dasha.mp4',  p: 'm/v-dasha.jpg' },
+    { name: 'Дима',   v: 'm/v-dima.mp4',   p: 'm/v-dima.jpg' },
+    { name: 'Глеб',   v: 'm/v-gleb.mp4',   p: 'm/v-gleb.jpg' }
+  ];
+  var CAM_CAPTIONS = ['Снято скрытой камерой', 'Кадр дня', 'Папарацци не дремлют', 'Этот кадр мама повесила бы на холодильник', 'Камера всё видит', 'Лучший кадр сезона'];
+  // Фотоархив и камера: фото зашифрованы паролем (AES-GCM, ключ из пароля через PBKDF2).
+  var FAMILY_LOCKED = {"salt":"zyfZqvX92gXVIpinbsv8PQ==","iv":"1ZNPyFUhRKGEhk4N","data":"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","iter":600000};
+  var MOON_SECRET = '[Секретное сообщение для брата]';
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function full(n) { return 'm/f/' + n + '.jpg'; }
+
+  // ===== Стаж на склоне =====
+  var cd = document.getElementById('c-days'), ch = document.getElementById('c-hours'), cm = document.getElementById('c-mins'), cs = document.getElementById('c-secs');
+  var birthUTC = Date.UTC(BIRTH.y, BIRTH.m, BIRTH.d);
+  function tickCounter() {
+    var n = new Date();
+    var days = Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - birthUTC) / 86400000);
+    cd.textContent = days.toLocaleString('ru-RU');
+    ch.textContent = n.getHours();
+    cm.textContent = n.getMinutes();
+    cs.textContent = n.getSeconds();
+  }
+  tickCounter();
+  setInterval(tickCounter, 1000);
+
+  // ===== Просмотр фото =====
+  var lb = document.getElementById('lb'), lbImg = document.getElementById('lb-img'), lbCount = document.getElementById('lb-count');
+  var lbSet = [], lbIdx = 0, lbReturn = null;
+  var lbToken = 0;
+  function lbShow() {
+    var t = ++lbToken;
+    lbImg.removeAttribute('src');
+    lbCount.textContent = (lbIdx + 1) + ' / ' + lbSet.length;
+    Promise.resolve(lbSet[lbIdx]()).then(function (url) { if (t === lbToken) lbImg.src = url; });
+  }
+  function lbOpen(set, i) { lbReturn = document.activeElement; lbSet = set; lbIdx = i; lbShow(); lb.hidden = false; document.getElementById('lb-close').focus(); }
+  function lbClose() { lb.hidden = true; lbImg.removeAttribute('src'); if (lbReturn) lbReturn.focus(); }
+  function lbStep(d) { lbIdx = (lbIdx + d + lbSet.length) % lbSet.length; lbShow(); }
+  document.getElementById('lb-close').addEventListener('click', lbClose);
+  document.getElementById('lb-prev').addEventListener('click', function () { lbStep(-1); });
+  document.getElementById('lb-next').addEventListener('click', function () { lbStep(1); });
+  var stage = document.getElementById('lb-stage'), sx = null;
+  stage.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', function (e) { if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) lbStep(dx < 0 ? 1 : -1); sx = null; });
+  stage.addEventListener('click', function (e) { if (e.target === stage) lbClose(); });
+
+  // ===== Трассы =====
+  var chevron = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9FB3D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+  var trailsEl = document.getElementById('trails');
+  TRAILS.forEach(function (t, i) {
+    var d = document.createElement('details');
+    d.className = 'trail';
+    if (i === 0) d.open = true;
+    var photos = t.photos.map(function (n, k) { return '<button class="photo" data-k="' + k + '" aria-label="Открыть фото ' + (k + 1) + '"><img src="' + full(n) + '" alt="" loading="lazy"></button>'; }).join('');
+    d.innerHTML =
+      '<summary><span class="pole ' + t.color + '" aria-hidden="true">' + (i + 1) + '</span>' +
+      '<span class="trail-name"><b>' + esc(t.name) + '</b><small>' + esc(t.level) + '</small></span>' + chevron + '</summary>' +
+      '<div class="trail-body"><div class="strip">' + photos + '</div><p class="swipe">' + t.photos.length + ' фото · листай вбок</p></div>';
+    var loaders = t.photos.map(function (n) { return function () { return full(n); }; });
+    d.querySelectorAll('.photo').forEach(function (b) { b.addEventListener('click', function () { lbOpen(loaders, +b.dataset.k); }); });
+    trailsEl.appendChild(d);
+  });
+
+  // ===== Зал славы =====
+  var ICONS = {
+    medal:  '<path d="M8 2h3l1 5M16 2h-3l-1 5"/><circle cx="12" cy="14" r="6"/><path d="m12 11 .9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z"/>',
+    skier:  '<circle cx="15" cy="4.5" r="2"/><path d="M14 7.5 10 12.5l4 2.5-2 4.5"/><path d="M12 9.5l4 2 2.5-1"/><path d="M4 17l16 5"/>',
+    pad:    '<rect x="2.5" y="7" width="19" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3"/><path d="M15.5 11.5h.01M17.5 13.5h.01" stroke-width="2.6"/>',
+    heart:  '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+    signal: '<path d="M2 21 8 11l4 6 2-3 4 7z"/><path d="M15 9V7M18 9V5M21 9V3"/>',
+    swords: '<path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="M13 19l6-6M16 16l4 4M19 21l2-2"/>',
+    home:   '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>',
+    chat:   '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/>',
+    star:   '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+    flag:   '<path d="M5 21V4M5 4h12l-2 4 2 4H5"/>'
+  };
+  var fameEl = document.getElementById('fame');
+  FAME.forEach(function (f) {
+    var el = document.createElement('div');
+    el.className = 'ach';
+    el.innerHTML =
+      '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFD27A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[f.icon] || ICONS.star) + '</svg>' +
+      '<b>' + esc(f.title) + '</b>' + (f.sub ? '<small>' + esc(f.sub) + '</small>' : '');
+    fameEl.appendChild(el);
+  });
+  document.getElementById('fame-count').textContent = 'Открыто достижений: ' + FAME.length + ' из ∞';
+
+  // ===== Плеер-кружок =====
+  var overlay = document.getElementById('overlay'), vid = document.getElementById('vid'), ring = document.getElementById('ring');
+  var vstate = document.getElementById('vstate'), closeBtn = document.getElementById('close'), roundEl = document.getElementById('round');
+  var playIcon = '<span class="play"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#EAF3FF" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></span>';
+  var lastFocus = null, openToken = 0;
+  function setState(html) { vstate.innerHTML = html || ''; }
+  function openVideo(name, srcPromise, warm) {
+    lastFocus = document.activeElement;
+    var token = ++openToken;
+    document.getElementById('modal-name').textContent = name;
+    ring.setAttribute('stroke', warm ? '#FFD27A' : '#7CC8FF');
+    ring.setAttribute('stroke-dashoffset', '100');
+    vid.removeAttribute('src'); vid.load();
+    setState('Загружаю…');
+    overlay.hidden = false;
+    closeBtn.focus();
+    Promise.resolve(srcPromise).then(function (src) {
+      if (token !== openToken) return;
+      vid.src = src;
+      var p = vid.play();
+      setState('');
+      if (p && p.catch) p.catch(function () { setState(playIcon); });
+    }).catch(function () { if (token === openToken) setState('Не удалось загрузить'); });
+  }
+  function closeVideo() { openToken++; vid.pause(); overlay.hidden = true; if (lastFocus) lastFocus.focus(); }
+  document.getElementById('tap').addEventListener('click', function () {
+    if (!vid.src) return;
+    if (vid.paused) { vid.play(); setState(''); } else { vid.pause(); setState(playIcon); }
+  });
+  vid.addEventListener('timeupdate', function () { if (vid.duration) ring.setAttribute('stroke-dashoffset', String(100 - (vid.currentTime / vid.duration) * 100)); });
+  vid.addEventListener('ended', function () { setState(playIcon); });
+  closeBtn.addEventListener('click', closeVideo);
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeVideo(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { if (!overlay.hidden) closeVideo(); else if (!lb.hidden) lbClose(); }
+    if (!lb.hidden && e.key === 'ArrowRight') lbStep(1);
+    if (!lb.hidden && e.key === 'ArrowLeft') lbStep(-1);
+  });
+
+  // ===== Подъёмники =====
+  var smallPlay = '<span class="play"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EAF3FF" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></span>';
+  var lifts = [];
+  function buildLift(el, list, warm) {
+    el.innerHTML = '';
+    list.forEach(function (p, i) {
+      var left = i % 2 === 0;
+      var cab = document.createElement('div');
+      cab.className = 'cab';
+      var label = p.pending ? 'в пути' : (p.who || ('Кабинка №' + (i + 1)));
+      cab.innerHTML =
+        '<span class="grip" aria-hidden="true"></span>' +
+        '<span class="rod" aria-hidden="true" style="height:' + (left ? 44 : 22) + 'px"></span>' +
+        (p.pending
+          ? '<button class="cab-btn pending" disabled aria-label="' + esc(p.name) + ': кабинка ещё в пути"><span>скоро</span></button>'
+          : '<button class="cab-btn" aria-label="Поздравление: ' + esc(p.name) + '">' + smallPlay + '</button>') +
+        '<span class="cab-no">' + esc(label) + '</span>' +
+        '<span class="cab-name">' + esc(p.name) + '</span>';
+      if (!left) cab.style.marginTop = '-22px';
+      var btn = cab.querySelector('button');
+      if (!p.pending) {
+        Promise.resolve(p.poster ? p.poster() : p.p).then(function (url) { if (url) btn.style.backgroundImage = 'url("' + url + '")'; });
+        btn.addEventListener('click', function () { openVideo(p.name, p.video ? p.video() : p.v, warm); });
+      }
+      el.appendChild(cab);
+    });
+    lifts.push(el);
+    placeCables(el);
+  }
+  function placeCables(el) {
+    el.querySelectorAll('.cable').forEach(function (c) { c.remove(); });
+    var cabs = el.querySelectorAll('.cab');
+    for (var r = 0; r < cabs.length; r += 2) {
+      var cable = document.createElement('span');
+      cable.className = 'cable';
+      cable.setAttribute('aria-hidden', 'true');
+      cable.style.top = (cabs[r].offsetTop + 16) + 'px';
+      el.insertBefore(cable, el.firstChild);
+    }
+  }
+  window.addEventListener('resize', function () { lifts.forEach(placeCables); });
+  buildLift(document.getElementById('lift-friends'), FRIENDS, false);
+
+  // ===== Семейная часть: расшифровка =====
+  var famKey = null, blobCache = {};
+  function b64(s) { var bin = atob(s), u = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; }
+  function norm(s) { return s.trim().toLowerCase().replace(/ё/g, 'е').replace(/[\s\-‐-—]/g, ''); }
+  async function deriveKey(pw) {
+    var subtle = window.crypto && window.crypto.subtle;
+    if (!subtle) throw new Error('no-crypto');
+    var base = await subtle.importKey('raw', new TextEncoder().encode(norm(pw)), 'PBKDF2', false, ['deriveKey']);
+    return subtle.deriveKey({ name: 'PBKDF2', salt: b64(FAMILY_LOCKED.salt), iterations: FAMILY_LOCKED.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  }
+  function decryptFile(ref) {
+    if (blobCache[ref.f]) return blobCache[ref.f];
+    blobCache[ref.f] = fetch(ref.f).then(function (r) { if (!r.ok) throw new Error('fetch'); return r.text(); })
+      .then(function (txt) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(ref.iv) }, famKey, b64(txt.trim())); })
+      .then(function (plain) { return URL.createObjectURL(new Blob([plain], { type: ref.t })); });
+    blobCache[ref.f].catch(function () { delete blobCache[ref.f]; });
+    return blobCache[ref.f];
+  }
+  var camPhotos = [], privGallery = [];
+  var gal = document.getElementById('gallery'), galMore = document.getElementById('gal-more'), GAL_FIRST = 12;
+  function renderGallery(all) {
+    gal.innerHTML = '';
+    document.getElementById('gal-lead').textContent = privGallery.length + ' кадров за всю жизнь. Жми на фото, чтобы открыть.';
+    var loaders = privGallery.map(function (g) { return function () { return decryptFile(g.f); }; });
+    (all ? privGallery : privGallery.slice(0, GAL_FIRST)).forEach(function (g, i) {
+      var b = document.createElement('button');
+      b.setAttribute('aria-label', 'Фото ' + (i + 1));
+      var img = document.createElement('img');
+      img.alt = '';
+      b.appendChild(img);
+      decryptFile(g.t).then(function (url) { img.src = url; });
+      b.addEventListener('click', function () { lbOpen(loaders, i); });
+      gal.appendChild(b);
+    });
+    galMore.textContent = 'Показать все ' + privGallery.length;
+    galMore.hidden = all || privGallery.length <= GAL_FIRST;
+  }
+  galMore.addEventListener('click', function () { renderGallery(true); });
+  var form = document.getElementById('lock-form'), pwInput = document.getElementById('pw'), unlockBtn = document.getElementById('unlock'), msg = document.getElementById('lock-msg');
+  var hintText = msg.textContent;
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (!pwInput.value.trim()) { msg.className = 'lock-msg err'; msg.textContent = 'Введи пароль'; return; }
+    unlockBtn.disabled = true; unlockBtn.textContent = 'Проверяю…';
+    msg.className = 'lock-msg'; msg.textContent = hintText;
+    try {
+      var key = await deriveKey(pwInput.value);
+      var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(FAMILY_LOCKED.iv) }, key, b64(FAMILY_LOCKED.data));
+      famKey = key;
+      var data = JSON.parse(new TextDecoder().decode(plain));
+      document.getElementById('family-lock').hidden = true;
+      document.getElementById('family-open').hidden = false;
+      document.getElementById('lock-icon').innerHTML = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/>';
+      privGallery = data.gallery || [];
+      camPhotos = privGallery.map(function (g) { return g.f; });
+      renderGallery(false);
+    } catch (err) {
+      msg.className = 'lock-msg err';
+      msg.textContent = err && err.message === 'no-crypto' ? 'Браузер не поддерживает расшифровку. Открой сайт в Chrome или Safari.' : 'Пароль не подошёл. ' + hintText;
+      form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake');
+      unlockBtn.disabled = false; unlockBtn.textContent = 'Открыть';
+      pwInput.select();
+    }
+  });
+
+  // ===== Камера на подъёмнике =====
+  var camImg = document.getElementById('cam-img'), camEmpty = document.getElementById('cam-empty'), cap = document.getElementById('cam-caption'), flash = document.getElementById('flash'), camBtn = document.getElementById('cam-btn');
+  var lastShot = -1;
+  camBtn.addEventListener('click', function () {
+    if (!camPhotos.length) return;
+    var n;
+    do { n = Math.floor(Math.random() * camPhotos.length); } while (camPhotos.length > 1 && n === lastShot);
+    lastShot = n;
+    camBtn.disabled = true;
+    decryptFile(camPhotos[n]).then(function (url) {
+      camImg.src = url; camImg.hidden = false; camEmpty.hidden = true;
+      cap.textContent = CAM_CAPTIONS[Math.floor(Math.random() * CAM_CAPTIONS.length)];
+      flash.classList.remove('on'); void flash.offsetWidth; flash.classList.add('on');
+    }).catch(function () { cap.textContent = 'Камера заела. Нажми ещё раз.'; })
+      .then(function () { camBtn.disabled = false; });
+  });
+
+  // ===== Пасхалка: 5 тапов по луне =====
+  var toast = document.getElementById('toast');
+  var taps = 0, toastTimer = null;
+  document.getElementById('moon').addEventListener('click', function () {
+    taps++;
+    if (taps >= 5) {
+      taps = 0;
+      toast.textContent = MOON_SECRET;
+      toast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.hidden = true; }, 4000);
+    }
+  });
+
+  // ===== Снег =====
+  var canvas = document.getElementById('snow'), ctx = canvas.getContext('2d');
+  var flakes = [], W = 0, H = 0;
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var n = Math.round(W * H / 9000);
+    flakes = [];
+    for (var i = 0; i < n; i++) flakes.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.8 + 0.6, s: Math.random() * 0.6 + 0.3, d: Math.random() * Math.PI * 2, o: Math.random() * 0.5 + 0.35 });
+    drawSnow();
+  }
+  function drawSnow() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#EAF3FF';
+    for (var i = 0; i < flakes.length; i++) { var f = flakes[i]; ctx.globalAlpha = f.o; ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill(); }
+    ctx.globalAlpha = 1;
+  }
+  function snowTick() {
+    for (var i = 0; i < flakes.length; i++) {
+      var f = flakes[i];
+      f.d += 0.01; f.y += f.s; f.x += Math.sin(f.d) * 0.3;
+      if (f.y > H + 4) { f.y = -4; f.x = Math.random() * W; }
+      if (f.x > W + 4) f.x = -4;
+      if (f.x < -4) f.x = W + 4;
+    }
+    drawSnow();
+    requestAnimationFrame(snowTick);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  if (!reduce) requestAnimationFrame(snowTick);
+
+  // ===== Салют =====
+  var fw = document.getElementById('fw'), fctx = fw.getContext('2d');
+  var FW_COLORS = ['#7CC8FF', '#FFD27A', '#EAF3FF', '#FF8A90', '#7FE3B0'];
+  var rockets = [], sparks = [], fwRunning = false, fwW = 0, fwH = 0;
+  function fwResize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    fwW = fw.clientWidth; fwH = fw.clientHeight;
+    fw.width = fwW * dpr; fw.height = fwH * dpr;
+    fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function launch(count) {
+    for (var i = 0; i < count; i++) {
+      rockets.push({ x: fwW * (0.2 + Math.random() * 0.6), y: fwH, vy: -(4.2 + Math.random() * 1.6), target: fwH * (0.25 + Math.random() * 0.25), color: FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)], delay: i * 18 });
+    }
+    if (!fwRunning) { fwRunning = true; requestAnimationFrame(fwTick); }
+  }
+  function burst(r) {
+    var n = 46;
+    for (var i = 0; i < n; i++) {
+      var a = (Math.PI * 2 * i) / n, sp = 1.2 + Math.random() * 2.2;
+      sparks.push({ x: r.x, y: r.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 1, color: r.color });
+    }
+  }
+  function fwTick() {
+    fctx.clearRect(0, 0, fwW, fwH);
+    rockets = rockets.filter(function (r) {
+      if (r.delay > 0) { r.delay--; return true; }
+      r.y += r.vy;
+      fctx.fillStyle = r.color; fctx.globalAlpha = 1;
+      fctx.fillRect(r.x - 1, r.y, 2, 6);
+      if (r.y <= r.target) { burst(r); return false; }
+      return true;
+    });
+    sparks = sparks.filter(function (s) {
+      s.x += s.vx; s.y += s.vy; s.vy += 0.035; s.vx *= 0.985; s.life -= 0.012;
+      if (s.life <= 0) return false;
+      fctx.globalAlpha = s.life; fctx.fillStyle = s.color;
+      fctx.beginPath(); fctx.arc(s.x, s.y, 1.8, 0, Math.PI * 2); fctx.fill();
+      return true;
+    });
+    fctx.globalAlpha = 1;
+    if (rockets.length || sparks.length) requestAnimationFrame(fwTick); else fwRunning = false;
+  }
+  fwResize();
+  window.addEventListener('resize', fwResize);
+  document.getElementById('fw-btn').addEventListener('click', function () { if (!reduce) launch(4); });
+  if (!reduce && 'IntersectionObserver' in window) {
+    var fired = false;
+    new IntersectionObserver(function (entries) {
+      if (!fired && entries[0].isIntersecting) { fired = true; launch(5); }
+    }, { threshold: 0.6 }).observe(document.getElementById('finale'));
+  }
+})();
+</script>
+
+</html>
